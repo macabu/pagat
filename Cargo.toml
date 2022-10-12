@@ -1,0 +1,20 @@
+[package]
+name = "pagat"
+version = "0.1.0"
+authors = ["Matheus Macabu <mkbu95@gmail.com>"]
+license = "MIT"
+repository = "https://github.com/macabu/pagat.git"
+edition = "2021"
+
+[lib]
+name = "pagat"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+petgraph = "0.6.2"
+
+[profile.release]
+lto = true
+opt-level = 3
+codegen-units = 1
