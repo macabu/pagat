@@ -15,7 +15,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test() {
+    fn test_basic() {
         let payments = Payments::builder()
             .record(Payment::new(
                 Person::new("A"),
@@ -39,14 +39,37 @@ mod tests {
             ))
             .build();
 
-        let q = payments.each_pays();
+        let expected_obligations = Obligations::builder()
+            .record(
+                Obligation::builder()
+                    .from(Person::new("C"))
+                    .to(Person::new("D"))
+                    .amount(Money::new(100))
+                    .build(),
+            )
+            .record(
+                Obligation::builder()
+                    .from(Person::new("B"))
+                    .to(Person::new("D"))
+                    .amount(Money::new(100))
+                    .build(),
+            )
+            .record(
+                Obligation::builder()
+                    .from(Person::new("B"))
+                    .to(Person::new("C"))
+                    .amount(Money::new(300))
+                    .build(),
+            )
+            .build();
 
-        let s = solver::Solver::new(q).solve();
-        dbg!(&s);
+        let obligations = payments.who_pays_whom().unwrap();
+
+        assert_eq!(expected_obligations, obligations);
     }
 
     #[test]
-    fn who_pays_whom() {
+    fn test_multiple_non_payers() {
         let everyone = &vec![
             Person::new("A"),
             Person::new("B"),
@@ -117,12 +140,65 @@ mod tests {
             )
             .build();
 
-        let obligations = payments.who_pays_whom();
-        dbg!(&obligations);
+        let expected_obligations = Obligations::builder()
+            .record(
+                Obligation::builder()
+                    .from(Person::new("C"))
+                    .to(Person::new("A"))
+                    .amount(Money::new(2696))
+                    .build(),
+            )
+            .record(
+                Obligation::builder()
+                    .from(Person::new("E"))
+                    .to(Person::new("A"))
+                    .amount(Money::new(9944))
+                    .build(),
+            )
+            .record(
+                Obligation::builder()
+                    .from(Person::new("G"))
+                    .to(Person::new("A"))
+                    .amount(Money::new(9944))
+                    .build(),
+            )
+            .record(
+                Obligation::builder()
+                    .from(Person::new("D"))
+                    .to(Person::new("B"))
+                    .amount(Money::new(9944))
+                    .build(),
+            )
+            .record(
+                Obligation::builder()
+                    .from(Person::new("F"))
+                    .to(Person::new("B"))
+                    .amount(Money::new(9944))
+                    .build(),
+            )
+            .record(
+                Obligation::builder()
+                    .from(Person::new("H"))
+                    .to(Person::new("B"))
+                    .amount(Money::new(9944))
+                    .build(),
+            )
+            .record(
+                Obligation::builder()
+                    .from(Person::new("B"))
+                    .to(Person::new("A"))
+                    .amount(Money::new(4480))
+                    .build(),
+            )
+            .build();
+
+        let obligations = payments.who_pays_whom().unwrap();
+
+        assert_eq!(expected_obligations, obligations);
     }
 
     #[test]
-    fn test_debug() {
+    fn test_reduce_same_weight() {
         let payments = Payments::builder()
             .record(Payment::new(
                 Person::new("A"),
@@ -141,7 +217,32 @@ mod tests {
             ))
             .build();
 
-        let obligations = payments.who_pays_whom();
-        dbg!(&obligations);
+        let expected_obligations = Obligations::builder()
+            .record(
+                Obligation::builder()
+                    .from(Person::new("B"))
+                    .to(Person::new("A"))
+                    .amount(Money::new(100))
+                    .build(),
+            )
+            .record(
+                Obligation::builder()
+                    .from(Person::new("C"))
+                    .to(Person::new("A"))
+                    .amount(Money::new(450))
+                    .build(),
+            )
+            .record(
+                Obligation::builder()
+                    .from(Person::new("H"))
+                    .to(Person::new("A"))
+                    .amount(Money::new(950))
+                    .build(),
+            )
+            .build();
+
+        let obligations = payments.who_pays_whom().unwrap();
+
+        assert_eq!(expected_obligations, obligations);
     }
 }

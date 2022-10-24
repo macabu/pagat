@@ -1,6 +1,6 @@
 use crate::{money::Money, person::Person};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Obligation {
     pub from: Person,
     pub to: Person,
@@ -55,7 +55,7 @@ impl ObligationBuilder {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Obligations(Vec<Obligation>);
 
 impl Obligations {
