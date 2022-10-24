@@ -1,5 +1,5 @@
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd)]
-pub struct Money(pub(crate) i32);
+pub struct Money(i32);
 
 impl Money {
     #[inline(always)]
@@ -13,3 +13,15 @@ impl Money {
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_newtype_money() {
+        let raw_amount = 10;
+        let money = Money::new(raw_amount);
+
+        assert_eq!(raw_amount, money.raw());
+    }
+}
