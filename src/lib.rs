@@ -20,22 +20,22 @@ mod tests {
             .record(Payment::new(
                 Person::new("A"),
                 Money::new(1200),
-                &vec![Person::new("B")],
+                &[Person::new("B")],
             ))
             .record(Payment::new(
                 Person::new("B"),
                 Money::new(1200),
-                &vec![Person::new("A"), Person::new("C"), Person::new("D")],
+                &[Person::new("A"), Person::new("C"), Person::new("D")],
             ))
             .record(Payment::new(
                 Person::new("C"),
                 Money::new(1200),
-                &vec![Person::new("A"), Person::new("B"), Person::new("D")],
+                &[Person::new("A"), Person::new("B"), Person::new("D")],
             ))
             .record(Payment::new(
                 Person::new("D"),
                 Money::new(1200),
-                &vec![Person::new("B"), Person::new("C")],
+                &[Person::new("B"), Person::new("C")],
             ))
             .build();
 
@@ -70,7 +70,7 @@ mod tests {
 
     #[test]
     fn test_multiple_non_payers() {
-        let everyone = &vec![
+        let everyone = &[
             Person::new("A"),
             Person::new("B"),
             Person::new("C"),
@@ -203,17 +203,17 @@ mod tests {
             .record(Payment::new(
                 Person::new("A"),
                 Money::new(2000),
-                &vec![Person::new("B"), Person::new("C"), Person::new("H")],
+                &[Person::new("B"), Person::new("C"), Person::new("H")],
             ))
             .record(Payment::new(
                 Person::new("C"),
                 Money::new(500),
-                &vec![Person::new("H")],
+                &[Person::new("H")],
             ))
             .record(Payment::new(
                 Person::new("B"),
                 Money::new(600),
-                &vec![Person::new("C"), Person::new("H")],
+                &[Person::new("C"), Person::new("H")],
             ))
             .build();
 

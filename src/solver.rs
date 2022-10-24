@@ -218,22 +218,22 @@ impl Solver {
             let endpoint = self
                 .0
                 .edge_endpoints(edge)
-                .ok_or(SolverError::NoEndpointForEdge(edge.index()))?;
+                .ok_or_else(|| SolverError::NoEndpointForEdge(edge.index()))?;
 
             let from = self
                 .0
                 .node_weight(endpoint.0)
-                .ok_or(SolverError::NoWeightForNode(endpoint.0.index()))?;
+                .ok_or_else(|| SolverError::NoWeightForNode(endpoint.0.index()))?;
 
             let to = self
                 .0
                 .node_weight(endpoint.1)
-                .ok_or(SolverError::NoWeightForNode(endpoint.1.index()))?;
+                .ok_or_else(|| SolverError::NoWeightForNode(endpoint.1.index()))?;
 
             let weight = self
                 .0
                 .edge_weight(edge)
-                .ok_or(SolverError::NoWeightForEdge(edge.index()))?;
+                .ok_or_else(|| SolverError::NoWeightForEdge(edge.index()))?;
 
             obligations.record(
                 Obligation::builder()
@@ -254,8 +254,8 @@ impl From<Obligations> for Solver {
         let mut g = Graph::<String, i32>::new();
 
         for obligation in item.raw() {
-            let from = obligation.from.raw().to_owned();
-            let to = obligation.to.raw().to_owned();
+            let from = obligation.from.raw().clone();
+            let to = obligation.to.raw().clone();
             let amount = obligation.amount.raw();
 
             let from_exists = g

@@ -1,6 +1,6 @@
 use crate::{money::Money, person::Person};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Obligation {
     pub from: Person,
     pub to: Person,
@@ -55,7 +55,7 @@ impl ObligationBuilder {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Obligations(Vec<Obligation>);
 
 impl Obligations {
@@ -103,8 +103,8 @@ mod tests {
         let to_raw = "to";
         let amount_raw = 10;
 
-        let from = Person::new(from_raw.clone());
-        let to = Person::new(to_raw.clone());
+        let from = Person::new(from_raw.to_owned());
+        let to = Person::new(to_raw.to_owned());
         let amount = Money::new(amount_raw);
 
         let obligation = Obligation::builder()

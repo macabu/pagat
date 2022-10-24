@@ -165,14 +165,14 @@ mod tests {
             .record(
                 Payment::builder()
                     .from(a.clone())
-                    .to(&vec![b.clone()])
+                    .to(&[b.clone()])
                     .amount(a_spent)
                     .build(),
             )
             .record(
                 Payment::builder()
                     .from(b.clone())
-                    .to(&vec![a.clone()])
+                    .to(&[a.clone()])
                     .amount(b_spent)
                     .build(),
             )
@@ -184,10 +184,10 @@ mod tests {
 
         for o in obligations.raw() {
             match &o.from {
-                _ if &o.from == &a => {
+                _ if o.from == a => {
                     assert_eq!(expected_a_pays, o.amount.raw());
                 }
-                _ if &o.from == &b => {
+                _ if o.from == b => {
                     assert_eq!(expected_b_pays, o.amount.raw());
                 }
                 _ => unreachable!(),
