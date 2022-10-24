@@ -225,7 +225,7 @@ impl From<Obligations> for Solver {
     fn from(item: Obligations) -> Self {
         let mut g = Graph::<String, i32>::new();
 
-        for obligation in item.obligations() {
+        for obligation in item.raw() {
             let from = obligation.from.raw().to_owned();
             let to = obligation.to.raw().to_owned();
             let amount = obligation.amount.raw();

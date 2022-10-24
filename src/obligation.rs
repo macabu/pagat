@@ -14,21 +14,6 @@ impl Obligation {
     }
 }
 
-#[derive(Debug, Default)]
-pub struct Obligations(pub(crate) Vec<Obligation>);
-
-impl Obligations {
-    #[inline(always)]
-    pub const fn obligations(&self) -> &Vec<Obligation> {
-        &self.0
-    }
-
-    #[inline(always)]
-    pub fn record(&mut self, o: Obligation) {
-        self.0.push(o)
-    }
-}
-
 #[derive(Default)]
 pub struct ObligationBuilder {
     from: Person,
@@ -67,5 +52,20 @@ impl ObligationBuilder {
             to: self.to,
             amount: self.amount,
         }
+    }
+}
+
+#[derive(Debug, Default)]
+pub struct Obligations(Vec<Obligation>);
+
+impl Obligations {
+    #[inline(always)]
+    pub fn record(&mut self, o: Obligation) {
+        self.0.push(o)
+    }
+
+    #[inline(always)]
+    pub const fn raw(&self) -> &Vec<Obligation> {
+        &self.0
     }
 }
