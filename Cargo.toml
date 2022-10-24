@@ -1,9 +1,12 @@
 [package]
 name = "pagat"
-version = "0.1.0"
+description = "A library that helps you split the bill"
+version = "0.0.1"
 authors = ["Matheus Macabu <mkbu95@gmail.com>"]
+keywords = ["bills", "split", "graphs", "money"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/macabu/pagat.git"
+readme = "README.md"
 edition = "2021"
 
 [lib]
