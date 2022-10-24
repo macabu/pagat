@@ -20,6 +20,7 @@ impl Payment {
         }
     }
 
+    #[inline(always)]
     pub fn builder() -> PaymentBuilder {
         PaymentBuilder::default()
     }
@@ -146,5 +147,51 @@ impl Payments {
     #[inline(always)]
     pub fn who_pays_whom(&self) -> Obligations {
         Solver::from(self.each_pays()).solve()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_each_pays() {
+        let a = Person::new("A");
+        let b = Person::new("B");
+        let a_spent = Money::new(10);
+        let b_spent = Money::new(20);
+
+        let obligations = Payments::builder()
+            .record(
+                Payment::builder()
+                    .from(a.clone())
+                    .to(&vec![b.clone()])
+                    .amount(a_spent)
+                    .build(),
+            )
+            .record(
+                Payment::builder()
+                    .from(b.clone())
+                    .to(&vec![a.clone()])
+                    .amount(b_spent)
+                    .build(),
+            )
+            .build()
+            .each_pays();
+
+        let expected_a_pays = b_spent.raw() / 2;
+        let expected_b_pays = a_spent.raw() / 2;
+
+        for o in obligations.raw() {
+            match &o.from {
+                _ if &o.from == &a => {
+                    assert_eq!(expected_a_pays, o.amount.raw());
+                }
+                _ if &o.from == &b => {
+                    assert_eq!(expected_b_pays, o.amount.raw());
+                }
+                _ => unreachable!(),
+            }
+        }
     }
 }
