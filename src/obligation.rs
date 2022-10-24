@@ -63,7 +63,7 @@ impl Obligations {
     pub fn new(obligations: &[Obligation]) -> Self {
         Self(obligations.to_vec())
     }
-    
+
     #[inline(always)]
     pub fn builder() -> ObligationsBuilder {
         ObligationsBuilder::default()
@@ -77,7 +77,7 @@ impl Obligations {
 
 #[derive(Debug, Default)]
 pub struct ObligationsBuilder {
-    obligations: Vec<Obligation>
+    obligations: Vec<Obligation>,
 }
 
 impl ObligationsBuilder {
@@ -107,7 +107,11 @@ mod tests {
         let to = Person::new(to_raw.clone());
         let amount = Money::new(amount_raw);
 
-        let obligation = Obligation::builder().from(from).to(to).amount(amount).build();
+        let obligation = Obligation::builder()
+            .from(from)
+            .to(to)
+            .amount(amount)
+            .build();
 
         assert_eq!(from_raw, obligation.from.raw());
         assert_eq!(to_raw, obligation.to.raw());

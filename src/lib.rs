@@ -59,14 +59,62 @@ mod tests {
         ];
 
         let payments = Payments::builder()
-            .record(Payment::new(Person::new("A"), Money::new(37009),everyone))
-            .record(Payment::new(Person::new("B"), Money::new(35300),everyone))
-            .record(Payment::new(Person::new("C"), Money::new(7249),everyone))
-            .record(Payment::new(Person::new("D"), Money::new(0),everyone))
-            .record(Payment::new(Person::new("E"), Money::new(0),everyone))
-            .record(Payment::new(Person::new("F"), Money::new(0),everyone))
-            .record(Payment::new(Person::new("G"), Money::new(0),everyone))
-            .record(Payment::new(Person::new("H"), Money::new(0),everyone))
+            .record(
+                Payment::builder()
+                    .from(Person::new("A"))
+                    .to(everyone)
+                    .amount(Money::new(37009))
+                    .build(),
+            )
+            .record(
+                Payment::builder()
+                    .from(Person::new("B"))
+                    .to(everyone)
+                    .amount(Money::new(35300))
+                    .build(),
+            )
+            .record(
+                Payment::builder()
+                    .from(Person::new("C"))
+                    .to(everyone)
+                    .amount(Money::new(7249))
+                    .build(),
+            )
+            .record(
+                Payment::builder()
+                    .from(Person::new("D"))
+                    .to(everyone)
+                    .amount(Money::new(0))
+                    .build(),
+            )
+            .record(
+                Payment::builder()
+                    .from(Person::new("E"))
+                    .to(everyone)
+                    .amount(Money::new(0))
+                    .build(),
+            )
+            .record(
+                Payment::builder()
+                    .from(Person::new("F"))
+                    .to(everyone)
+                    .amount(Money::new(0))
+                    .build(),
+            )
+            .record(
+                Payment::builder()
+                    .from(Person::new("G"))
+                    .to(everyone)
+                    .amount(Money::new(0))
+                    .build(),
+            )
+            .record(
+                Payment::builder()
+                    .from(Person::new("H"))
+                    .to(everyone)
+                    .amount(Money::new(0))
+                    .build(),
+            )
             .build();
 
         let obligations = payments.who_pays_whom();
@@ -76,11 +124,23 @@ mod tests {
     #[test]
     fn test_debug() {
         let payments = Payments::builder()
-            .record(Payment::new(Person::new("A"), Money::new(2000), &vec![Person::new("B"), Person::new("C"), Person::new("H")]))
-            .record(Payment::new(Person::new("C"), Money::new(500), &vec![Person::new("H")]))
-            .record(Payment::new(Person::new("B"), Money::new(600), &vec![Person::new("C"), Person::new("H")]))
+            .record(Payment::new(
+                Person::new("A"),
+                Money::new(2000),
+                &vec![Person::new("B"), Person::new("C"), Person::new("H")],
+            ))
+            .record(Payment::new(
+                Person::new("C"),
+                Money::new(500),
+                &vec![Person::new("H")],
+            ))
+            .record(Payment::new(
+                Person::new("B"),
+                Money::new(600),
+                &vec![Person::new("C"), Person::new("H")],
+            ))
             .build();
-        
+
         let obligations = payments.who_pays_whom();
         dbg!(&obligations);
     }
