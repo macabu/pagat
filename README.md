@@ -1,4 +1,8 @@
 # pagat
+
+[![Current Crates.io Version](https://img.shields.io/crates/v/pagat.svg)](https://crates.io/crates/pagat)
+[![CI](https://github.com/macabu/pagat/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/macabu/pagat/actions/workflows/ci.yaml)
+
 A library that helps you split the bill; made for learning purposes, not production-ready.
 
 ## Installation
