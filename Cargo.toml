@@ -2,7 +2,7 @@
 name = "pagat"
 version = "0.1.0"
 authors = ["Matheus Macabu <mkbu95@gmail.com>"]
-license = "MIT"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/macabu/pagat.git"
 edition = "2021"
 
