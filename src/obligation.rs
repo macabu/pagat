@@ -69,3 +69,29 @@ impl Obligations {
         &self.0
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_obligations() {
+        let from_raw = "from";
+        let to_raw = "to";
+        let amount_raw = 10;
+
+        let from = Person::new(from_raw.clone());
+        let to = Person::new(to_raw.clone());
+        let amount = Money::new(amount_raw);
+
+        let obligation = Obligation::builder().from(from).to(to).amount(amount).build();
+
+        assert_eq!(from_raw, obligation.from.raw());
+        assert_eq!(to_raw, obligation.to.raw());
+        assert_eq!(amount_raw, obligation.amount.raw());
+
+        let mut obligations = Obligations::default();
+        obligations.record(obligation);
+        assert_eq!(1, obligations.raw().len());
+    }
+}
