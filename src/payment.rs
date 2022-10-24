@@ -74,7 +74,7 @@ impl Payments {
 
             let included = to.len() + included;
 
-            let total = f64::from(payment.amount.0 / included as i32).ceil() as i32;
+            let total = f64::from(payment.amount.raw() / included as i32).ceil() as i32;
 
             for debtor in to {
                 if debtor == &payment.by || total == 0 {
