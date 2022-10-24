@@ -1,7 +1,7 @@
 use crate::money::Money;
 use crate::obligation::{Obligation, Obligations};
 use crate::person::Person;
-use crate::Solver;
+use crate::{Solver, SolverError};
 
 #[derive(Debug, Clone)]
 pub struct Payment {
@@ -145,7 +145,7 @@ impl Payments {
     }
 
     #[inline(always)]
-    pub fn who_pays_whom(&self) -> Obligations {
+    pub fn who_pays_whom(&self) -> Result<Obligations, SolverError> {
         Solver::from(self.each_pays()).solve()
     }
 }

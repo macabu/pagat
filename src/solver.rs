@@ -1,7 +1,20 @@
 use petgraph::Graph;
 use std::convert::From;
+use thiserror::Error;
 
 use crate::{obligation::Obligations, Money, Obligation, Person};
+
+#[derive(Error, Debug)]
+pub enum SolverError {
+    #[error("could not find endpoints for edge index {0}")]
+    NoEndpointForEdge(usize),
+
+    #[error("could not find weight for node index {0}")]
+    NoWeightForNode(usize),
+
+    #[error("could not find weight for edge index {0}")]
+    NoWeightForEdge(usize),
+}
 
 pub struct Solver(pub(crate) petgraph::Graph<String, i32>);
 
@@ -12,7 +25,7 @@ impl Solver {
     }
 
     #[inline(always)]
-    pub fn solve(&mut self) -> Obligations {
+    pub fn solve(&mut self) -> Result<Obligations, SolverError> {
         self.pass_remove_doubly_connected_edges();
         self.pass_simplify_double_target();
         self.pass_remove_same_weight_target();
@@ -198,14 +211,29 @@ impl Solver {
     }
 
     #[inline(always)]
-    fn format_out(&self) -> Obligations {
+    fn format_out(&self) -> Result<Obligations, SolverError> {
         let mut obligations = Obligations::builder();
 
         for edge in self.0.edge_indices() {
-            let endpoint = self.0.edge_endpoints(edge).unwrap();
-            let from = self.0.node_weight(endpoint.0).unwrap();
-            let to = self.0.node_weight(endpoint.1).unwrap();
-            let weight = self.0.edge_weight(edge).unwrap();
+            let endpoint = self
+                .0
+                .edge_endpoints(edge)
+                .ok_or(SolverError::NoEndpointForEdge(edge.index()))?;
+
+            let from = self
+                .0
+                .node_weight(endpoint.0)
+                .ok_or(SolverError::NoWeightForNode(endpoint.0.index()))?;
+
+            let to = self
+                .0
+                .node_weight(endpoint.1)
+                .ok_or(SolverError::NoWeightForNode(endpoint.1.index()))?;
+
+            let weight = self
+                .0
+                .edge_weight(edge)
+                .ok_or(SolverError::NoWeightForEdge(edge.index()))?;
 
             obligations.record(
                 Obligation::builder()
@@ -216,7 +244,7 @@ impl Solver {
             );
         }
 
-        obligations.build()
+        Ok(obligations.build())
     }
 }
 
