@@ -1,6 +1,6 @@
 use crate::{money::Money, person::Person};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Obligation {
     pub from: Person,
     pub to: Person,
@@ -55,18 +55,41 @@ impl ObligationBuilder {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct Obligations(Vec<Obligation>);
 
 impl Obligations {
     #[inline(always)]
-    pub fn record(&mut self, o: Obligation) {
-        self.0.push(o)
+    pub fn new(obligations: &[Obligation]) -> Self {
+        Self(obligations.to_vec())
+    }
+    
+    #[inline(always)]
+    pub fn builder() -> ObligationsBuilder {
+        ObligationsBuilder::default()
     }
 
     #[inline(always)]
     pub const fn raw(&self) -> &Vec<Obligation> {
         &self.0
+    }
+}
+
+#[derive(Debug, Default)]
+pub struct ObligationsBuilder {
+    obligations: Vec<Obligation>
+}
+
+impl ObligationsBuilder {
+    #[inline(always)]
+    pub fn record(&mut self, o: Obligation) -> &mut Self {
+        self.obligations.push(o);
+        self
+    }
+
+    #[inline(always)]
+    pub fn build(&mut self) -> Obligations {
+        Obligations::new(&self.obligations)
     }
 }
 
@@ -90,8 +113,7 @@ mod tests {
         assert_eq!(to_raw, obligation.to.raw());
         assert_eq!(amount_raw, obligation.amount.raw());
 
-        let mut obligations = Obligations::default();
-        obligations.record(obligation);
+        let obligations = Obligations::builder().record(obligation).build();
         assert_eq!(1, obligations.raw().len());
     }
 }

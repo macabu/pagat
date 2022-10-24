@@ -199,7 +199,7 @@ impl Solver {
 
     #[inline(always)]
     fn format_out(&self) -> Obligations {
-        let mut obligations = Obligations::default();
+        let mut obligations = Obligations::builder();
 
         for edge in self.0.edge_indices() {
             let endpoint = self.0.edge_endpoints(edge).unwrap();
@@ -216,7 +216,7 @@ impl Solver {
             );
         }
 
-        obligations
+        obligations.build()
     }
 }
 

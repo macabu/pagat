@@ -47,7 +47,7 @@ impl PaymentsBuilder {
 }
 
 #[derive(Debug)]
-pub struct Payments(pub(crate) Vec<Payment>);
+pub struct Payments(Vec<Payment>);
 
 impl Payments {
     #[inline(always)]
@@ -62,7 +62,7 @@ impl Payments {
 
     #[inline(always)]
     pub(crate) fn each_pays(&self) -> Obligations {
-        let mut obligations = Obligations::default();
+        let mut obligations = Obligations::builder();
 
         for payment in &self.0 {
             let to = &payment.to;
@@ -91,7 +91,7 @@ impl Payments {
             }
         }
 
-        obligations
+        obligations.build()
     }
 
     #[inline(always)]
