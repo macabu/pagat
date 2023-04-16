@@ -8,7 +8,7 @@ A library that helps you split the bill; made for learning purposes, not product
 ## Installation
 ```toml
 [dependencies]
-pagat = "0.0.1"
+pagat = "0.0.2"
 ```
 
 ## Concepts

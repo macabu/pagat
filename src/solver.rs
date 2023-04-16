@@ -260,13 +260,11 @@ impl From<Obligations> for Solver {
 
             let from_exists = g
                 .node_indices()
-                .into_iter()
                 .filter(|node| g[*node] == from)
                 .collect::<Vec<_>>();
 
             let to_exists = g
                 .node_indices()
-                .into_iter()
                 .filter(|node| g[*node] == to)
                 .collect::<Vec<_>>();
 
