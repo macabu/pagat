@@ -1,6 +1,8 @@
+use alloc::vec::Vec;
+use alloc::string::String;
+
 use petgraph::Graph;
-use std::convert::From;
-use thiserror::Error;
+use thiserror_no_std::Error;
 
 use crate::{obligation::Obligations, Money, Obligation, Person};
 
@@ -20,8 +22,55 @@ pub struct Solver(pub(crate) petgraph::Graph<String, i32>);
 
 impl Solver {
     #[inline(always)]
-    pub fn new(o: Obligations) -> Self {
-        Self::from(o)
+    pub fn new(item: Obligations) -> Self {
+        let mut g = Graph::<String, i32>::new();
+
+        for obligation in item.raw() {
+            let from = obligation.from.raw().clone();
+            let to = obligation.to.raw().clone();
+            let amount = obligation.amount.raw();
+
+            let from_exists = g
+                .node_indices()
+                .filter(|node| g[*node] == from)
+                .collect::<Vec<_>>();
+
+            let to_exists = g
+                .node_indices()
+                .filter(|node| g[*node] == to)
+                .collect::<Vec<_>>();
+
+            match (from_exists.first(), to_exists.first()) {
+                (Some(from), None) => {
+                    let to = g.add_node(to);
+
+                    g.add_edge(*from, to, amount);
+                }
+                (None, Some(to)) => {
+                    let from = g.add_node(from);
+
+                    g.add_edge(from, *to, amount);
+                }
+                (Some(from), Some(to)) => match g.find_edge(*from, *to) {
+                    Some(existing_edge) => {
+                        let existing_weight = g.edge_weight(existing_edge).unwrap_or(&0);
+
+                        g.update_edge(*from, *to, existing_weight + amount);
+                    }
+                    None => {
+                        g.add_edge(*from, *to, obligation.amount.raw());
+                    }
+                },
+                (None, None) => {
+                    let from = g.add_node(from);
+                    let to = g.add_node(to);
+
+                    g.add_edge(from, to, obligation.amount.raw());
+                }
+            }
+        }
+
+        Self(g)
     }
 
     #[inline(always)]
@@ -245,59 +294,5 @@ impl Solver {
         }
 
         Ok(obligations.build())
-    }
-}
-
-impl From<Obligations> for Solver {
-    #[inline(always)]
-    fn from(item: Obligations) -> Self {
-        let mut g = Graph::<String, i32>::new();
-
-        for obligation in item.raw() {
-            let from = obligation.from.raw().clone();
-            let to = obligation.to.raw().clone();
-            let amount = obligation.amount.raw();
-
-            let from_exists = g
-                .node_indices()
-                .filter(|node| g[*node] == from)
-                .collect::<Vec<_>>();
-
-            let to_exists = g
-                .node_indices()
-                .filter(|node| g[*node] == to)
-                .collect::<Vec<_>>();
-
-            match (from_exists.first(), to_exists.first()) {
-                (Some(from), None) => {
-                    let to = g.add_node(to);
-
-                    g.add_edge(*from, to, amount);
-                }
-                (None, Some(to)) => {
-                    let from = g.add_node(from);
-
-                    g.add_edge(from, *to, amount);
-                }
-                (Some(from), Some(to)) => match g.find_edge(*from, *to) {
-                    Some(existing_edge) => {
-                        let existing_weight = g.edge_weight(existing_edge).unwrap_or(&0);
-
-                        g.update_edge(*from, *to, existing_weight + amount);
-                    }
-                    None => {
-                        g.add_edge(*from, *to, obligation.amount.raw());
-                    }
-                },
-                (None, None) => {
-                    let from = g.add_node(from);
-                    let to = g.add_node(to);
-
-                    g.add_edge(from, to, obligation.amount.raw());
-                }
-            }
-        }
-
-        Self(g)
     }
 }

@@ -1,3 +1,5 @@
+use alloc::vec::Vec;
+
 use crate::{money::Money, person::Person};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -96,6 +98,7 @@ impl ObligationsBuilder {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::alloc::borrow::ToOwned;
 
     #[test]
     fn test_obligations() {

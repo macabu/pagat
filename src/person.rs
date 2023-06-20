@@ -1,3 +1,5 @@
+use alloc::string::String;
+
 #[derive(Debug, Default, Clone, Eq, PartialEq, Hash)]
 pub struct Person(String);
 
@@ -16,6 +18,7 @@ impl Person {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::alloc::borrow::ToOwned;
 
     #[test]
     fn test_newtype_person() {

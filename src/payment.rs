@@ -1,3 +1,5 @@
+use alloc::vec::Vec;
+
 use crate::money::Money;
 use crate::obligation::{Obligation, Obligations};
 use crate::person::Person;
@@ -146,7 +148,7 @@ impl Payments {
 
     #[inline(always)]
     pub fn who_pays_whom(&self) -> Result<Obligations, SolverError> {
-        Solver::from(self.each_pays()).solve()
+        Solver::new(self.each_pays()).solve()
     }
 }
 
